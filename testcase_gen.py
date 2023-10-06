@@ -80,13 +80,8 @@ if __name__ == '__main__':
                 testcases_bar = tqdm(range(testcase_count),
                                      bar_format=progress_bar_format, unit='tc')
                 for i in testcases_bar:
-                    input_s, output_s = generator.generate(i)
-                    if not generator.check(input_s, output_s):
-                        testcases_bar.close()
-                        print(f'Invalid sequence at index {i}')
-                        print(
-                            f'Please fix `{gen_file_name}` file for problem `{problem_name}`')
-                        exit(1)
+                    input_s = generator.generate_inputs(i)
+                    output_s = generator.solution(input_s)
 
                     index_s = str(i).zfill(2)
                     input_file_path = os.path.join(

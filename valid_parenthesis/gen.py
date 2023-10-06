@@ -1,70 +1,63 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import random
 
 
-def check(inp: str, out: str) -> bool:
-    comp = {
-        '(': ')',
-        '[': ']',
-        '{': '}',
-    }
-    win = {
-        'false': False,
-        'true': True
+def solution(std_input: str) -> str:
+    LR_map = {
+        ')': '(',
+        '}': '{',
+        ']': '[',
     }
     stack = []
-    for c in inp:
-        if c in comp.keys():
+
+    for c in std_input.strip():
+        if c in LR_map.values():
             stack.append(c)
-        elif not stack:
-            return not win[out]
-        elif comp[stack.pop()] != c:
-            return not win[out]
-    if stack:
-        return not win[out]
-    return win[out]
+        elif c in LR_map.keys():
+            if len(stack) == 0:
+                return 'false'
+            top = stack.pop()
+            if top != LR_map[c]:
+                return 'false'
+    return 'true' if len(stack) == 0 else 'false'
 
 
-def generate(index: int) -> Tuple[str, str]:
+def generate_inputs(index: int) -> str:
+    random.seed(index)
+    rand_yes_no: Callable = lambda: random.randint(1, 100) > 50
+
     L = '({['
     R = ')}]'
+    max_len = 10**4
+    max_len = 10
 
     seq = ''
-    max_len = 10**4
 
-    random.seed(index)
-    def gen_rand(): return (random.randint(1, 100) > 50)
+    stack = []
+    count = random.randint(1, max_len / 2)
 
-    fail = gen_rand()
+    while count > 0:
+        close = rand_yes_no()
+        if close and len(stack) > 0:
+            closed = stack.pop()
+            seq += R[closed]
+            continue
+        pick = random.randint(0, len(L)-1)
+        stack.append(pick)
+        seq += L[pick]
+        count -= 1
+
+    while len(stack) > 0:
+        closed = stack.pop()
+        seq += R[closed]
+
+    fail = rand_yes_no()
     if fail:
-        spc = gen_rand()
-        if spc:
-            seq = random.choice(L if gen_rand() else R)
-        else:
-            odd = gen_rand()
-            if odd:
-                count = (random.randint(1, max_len//2) * 2) - 1
-                seq = ''.join((random.choice(L if random.randint(
-                    1, 100) > 50 else R)) for _ in range(count))
-            else:
-                count = random.randint(1, max_len//4) * 2
-                choices = [random.randint(0, len(L) - 1) for _ in range(count)]
-                L_l = [L[i] for i in choices]
-                R_l = [R[i] for i in choices[::-1]]
-                seq_l = [v for v in L_l]
-                mutation_count = random.randint(1, count)
-                if mutation_count > 0:
-                    for _ in range(mutation_count):
-                        mutation_index = random.randint(0, len(seq_l)-1)
-                        seq_l = seq_l[:mutation_index] + \
-                            [R_l.pop(random.randint(0, len(R_l)-1))] + \
-                            seq_l[mutation_index:]
-                seq_l += R_l
-                seq = ''.join(seq_l)
-    else:
-        count = random.randint(1, max_len//2)
-        choices = [random.randint(0, len(L) - 1) for _ in range(count)]
-        seq = ''.join([L[i] for i in choices]) + \
-            ''.join([R[i] for i in choices[::-1]])
-    return seq, str(not fail).lower()
+        rem_count = random.randint(1, len(seq) - 1)
+        rem_count = rem_count-1 if (rem_count % 2) == 0 else rem_count
+        for _ in range(rem_count):
+            cut_i = random.randint(0, len(seq) - 1)
+            seq = seq[:cut_i] + seq[cut_i + 1:]
+
+    return seq
