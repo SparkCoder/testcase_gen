@@ -61,9 +61,9 @@ if __name__ == '__main__':
               file=sys.stderr)
 
     for problem in problems:
-        problem_name = problem['name']
-        testcase_count = problem['testcases']
-        problem_dir = os.path.join(root_dir, problem_name)
+        problem_name = problem
+        testcase_count = problems[problem]['testcases']
+        problem_dir = os.path.join(root_dir, f'problem_{problem_name}')
         if testcase_count <= 0:
             print(f'Ignoring problem: {problem_name}')
             continue

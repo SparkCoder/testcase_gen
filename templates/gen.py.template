@@ -1,0 +1,6 @@
+def solution(std_input: str) -> str:
+    return 'output'
+
+
+def generate_inputs(index: int) -> str:
+    return 'input'
