@@ -22,8 +22,10 @@ if __name__ == '__main__':
         with open(os.path.join(APP_ROOT, 'templates', 'gen.py.template'), 'r') as template:
             gen_py_file.write(template.read())
 
+    problem_dir = os.path.join(APP_ROOT, 'problems', 'problems.yaml')
+    
     # Add problem to problems.yaml
-    with open(os.path.join(APP_ROOT, 'problems.yaml'), 'r') as problems_file:
+    with open(problem_dir, 'r') as problems_file:
         try:
             problems = yaml.safe_load(problems_file)
         except yaml.YAMLError:
@@ -31,7 +33,7 @@ if __name__ == '__main__':
 
     problems['problems'][name] = {'testcases': 10}
 
-    with open(os.path.join(APP_ROOT, 'problems.yaml'), 'w') as problems_file:
+    with open(problem_dir, 'w') as problems_file:
         try:
             yaml.safe_dump(problems, problems_file, default_flow_style=False)
         except yaml.YAMLError:

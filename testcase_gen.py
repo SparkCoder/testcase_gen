@@ -63,7 +63,7 @@ if __name__ == '__main__':
     for problem in problems:
         problem_name = problem
         testcase_count = problems[problem]['testcases']
-        problem_dir = os.path.join(root_dir, f'problem_{problem_name}')
+        problem_dir = os.path.join(root_dir, 'problems', f'problem_{problem_name}')
         if testcase_count <= 0:
             print(f'Ignoring problem: {problem_name}')
             continue
